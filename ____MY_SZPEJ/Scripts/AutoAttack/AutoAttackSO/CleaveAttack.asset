@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3001f8496bef2b4989204484416d35b, type: 3}
+  m_Name: CleaveAttack
+  m_EditorClassIdentifier: 
+  id: 1
+  attackName: Cleave
+  isUnlocked: 1
+  icon: {fileID: 21300000, guid: 28b2dc6997ba49643a2ec6ac1fde29e5, type: 3}
+  damageMultiplier: 1.4
+  attackType: 0
+  range: 1
+  radius: 2
+  projectileSpeed: 10
+  projectileDuration: 5
+  pullSpeed: 12
+  projectilePrefab: {fileID: 0}
+  effectPrefab: {fileID: 8918948595057123818, guid: 1927b3fdd9a4511459e8c387022b9c08, type: 3}
+  effectDuration: 0.5

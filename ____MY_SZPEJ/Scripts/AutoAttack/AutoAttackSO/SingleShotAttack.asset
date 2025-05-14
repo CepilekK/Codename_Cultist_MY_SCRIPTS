@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3001f8496bef2b4989204484416d35b, type: 3}
+  m_Name: SingleShotAttack
+  m_EditorClassIdentifier: 
+  id: 2
+  attackName: SingleShot
+  isUnlocked: 1
+  icon: {fileID: 21300000, guid: 82eb4b47c6005ee45944f67bf2895294, type: 3}
+  damageMultiplier: 1
+  attackType: 1
+  range: 4
+  radius: 2
+  projectileSpeed: 10.25
+  projectileDuration: 5
+  pullSpeed: 12
+  projectilePrefab: {fileID: 8721893482106851358, guid: 97b6c46eb8cbc8347b8c41ecf1a4f6d3, type: 3}
+  effectPrefab: {fileID: 0}
+  effectDuration: 2
