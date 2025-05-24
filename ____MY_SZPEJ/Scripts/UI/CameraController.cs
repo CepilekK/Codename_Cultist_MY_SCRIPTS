@@ -15,14 +15,14 @@ public class CameraController : MonoBehaviour
     private float currentZoom;
     private float targetRotation = 0f;
     private float rotationVelocity;
-    private Vector3 velocity = Vector3.zero; 
+    private Vector3 velocity = Vector3.zero;
 
     private void Start()
     {
         camTransform = Camera.main.transform;
-        currentZoom = (minZoom + maxZoom) / 2f; 
+        currentZoom = (minZoom + maxZoom) / 2f;
 
-       
+
         SetInitialCameraPosition();
     }
 

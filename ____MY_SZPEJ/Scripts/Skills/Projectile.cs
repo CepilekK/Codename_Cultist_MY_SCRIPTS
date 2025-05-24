@@ -52,7 +52,7 @@ public class Projectile : MonoBehaviour
             if (health != null)
             {
                 health.Damage(damage);
-                Debug.Log($"Pocisk ({source}) trafi³ za {damage}! HP celu: {health.GetHealth()}");
+             //   Debug.Log($"Pocisk ({source}) trafi³ za {damage}! HP celu: {health.GetHealth()}");
 
               
             }

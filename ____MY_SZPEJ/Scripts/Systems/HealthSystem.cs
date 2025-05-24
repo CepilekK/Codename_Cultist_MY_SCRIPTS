@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
+   
     public event EventHandler OnDead;
     public event EventHandler OnDamaged;
     public event Action<int, int> OnHealthChanged;
@@ -130,6 +131,25 @@ public class HealthSystem : MonoBehaviour
         OnHealthChanged?.Invoke(health, healthMax);
     }
 
+    private void OnEnable()
+    {
+        if (playerStatsManager != null)
+        {
+            playerStatsManager.OnMaxHealthChange += HandleMaxHealthChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (playerStatsManager != null)
+        {
+            playerStatsManager.OnMaxHealthChange -= HandleMaxHealthChanged;
+        }
+    }
+    private void HandleMaxHealthChanged(object sender, EventArgs e)
+    {
+        RefreshMaxHealth();
+    }
 
     public bool IsDead() => health <= 0;
     public int GetHealth() => health;

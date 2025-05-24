@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 using System;
+using System.Buffers.Text;
 
 public class EnemyStateMachine : MonoBehaviour
 {
@@ -140,16 +141,35 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void HandleEnemyDeath(object sender, EventArgs e)
     {
-        if (PotionSlotUI.Instance != null)
+        if (PotionSlotUI.Instance != null)// odnawianie potki
         {
             PotionSlotUI.Instance.AddCharge();
         }
 
-        if (ItemDropManager.Instance != null)
+        if (ItemDropManager.Instance != null)// Drop Itemów
         {
             ItemDropManager.Instance.DropItems(transform.position, stats.minDropAmount, stats.maxDropAmount);
 
         }
+
+        if (PlayerStatsManager.Instance != null && AreaSettingsManager.Instance != null)// DAWABUE GRACZOWI PUNKTÓW DOŒWIOADCZENIA PD/XP
+        {
+            int playerLevel = PlayerStatsManager.Instance.Level;
+            int areaLevel = AreaSettingsManager.Instance.GetAreaLevel();
+            int baseXp = stats.baseXpValue;
+
+            int xpToGive = baseXp;
+
+            if (areaLevel < playerLevel)
+            {
+                int diff = playerLevel - areaLevel;
+                xpToGive = Mathf.RoundToInt(baseXp / (float)diff);
+            }
+           
+
+            PlayerStatsManager.Instance.AddXPFromEnemy(stats.baseXpValue);
+        }
+
 
         // Zniszczenie wroga
         Destroy(gameObject);

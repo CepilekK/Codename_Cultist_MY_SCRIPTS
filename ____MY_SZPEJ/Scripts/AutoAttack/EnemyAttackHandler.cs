@@ -19,7 +19,7 @@ public class EnemyAttackHandler : MonoBehaviour
         {
             case AutoAttackType.Cleave:
                 return new CleaveAttack(attackData, null);
-            
+
             default:
                 Debug.LogWarning("Nieobs³ugiwany typ autoataku dla wroga!");
                 return null;

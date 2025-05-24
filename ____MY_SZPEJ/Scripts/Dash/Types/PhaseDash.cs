@@ -15,7 +15,7 @@ public class PhaseDash : IDash
     public void Execute(Transform user)
     {
         Vector3 target = GetDashTarget(user);
-        Debug.Log("Dashing to: " + target);
+      //  Debug.Log("Dashing to: " + target);
         user.position = target;
     }
 

@@ -79,7 +79,7 @@ public class SkillBarManager : MonoBehaviour
             skillButtons[index].UpdateUI(skill);
         }
 
-        Debug.Log($"Skill {skill.GetData().skillName} przypisany do slotu {index}.");
+      
     }
 
 

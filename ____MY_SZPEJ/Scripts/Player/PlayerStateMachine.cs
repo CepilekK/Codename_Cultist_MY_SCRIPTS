@@ -242,7 +242,7 @@ public class PlayerStateMachine : MonoBehaviour
     private void HandlePlayerDeath(object sender, EventArgs e)
     {
         Debug.Log("Gracz zginął!");
-      
+
         Destroy(gameObject);
     }
     private void OnDestroy()

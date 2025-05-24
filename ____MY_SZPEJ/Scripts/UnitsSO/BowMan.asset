@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitName: Dummy
   maxHealthPoints: 100
+  healthRegenPercent: 1
   baseDamage: 10
+  maxResourcePoints: 200
   moveSpeedModifier: 1
   strength: 3
   dexterity: 3
@@ -24,3 +26,6 @@ MonoBehaviour:
   attackRange: 6
   moveSpeed: 3
   attackCooldown: 1.5
+  minDropAmount: 0
+  maxDropAmount: 4
+  baseXpValue: 4

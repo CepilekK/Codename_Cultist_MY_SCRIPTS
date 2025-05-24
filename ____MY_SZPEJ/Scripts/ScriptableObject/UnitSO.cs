@@ -29,6 +29,6 @@ public class UnitSO : ScriptableObject
     [Header("Drop Settings")]
     public int minDropAmount = 0;
     public int maxDropAmount = 4;
-
+    public int baseXpValue = 10;
 
 }

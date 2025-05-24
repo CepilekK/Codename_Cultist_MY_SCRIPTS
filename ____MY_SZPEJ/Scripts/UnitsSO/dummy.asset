@@ -28,3 +28,4 @@ MonoBehaviour:
   attackCooldown: 1.5
   minDropAmount: 0
   maxDropAmount: 4
+  baseXpValue: 2
