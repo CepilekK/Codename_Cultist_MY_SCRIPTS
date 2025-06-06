@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SkillSelectionPanel : MonoBehaviour
@@ -26,10 +28,9 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         ClearButtons();
 
-        foreach (SkillSO skillSO in skillDatabase.GetAllSkills())
+        List<SkillSO> unlockedSkills = PlayerSkillManager.Instance.GetUnlockedSkills();
+        foreach (SkillSO skillSO in unlockedSkills)
         {
-            if (!skillSO.isUnlocked) continue;
-
             GameObject obj = Instantiate(skillOptionButtonPrefab, buttonContainer);
             SkillOptionButton option = obj.GetComponent<SkillOptionButton>();
             option.Setup(skillSO, this);
@@ -63,5 +64,30 @@ public class SkillSelectionPanel : MonoBehaviour
                 return null;
         }
     }
+
+    private void OnEnable()
+    {
+        if (PlayerSkillManager.Instance != null)
+        {
+            PlayerSkillManager.Instance.OnSkillsChanged += HandleSkillsChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (PlayerSkillManager.Instance != null)
+        {
+            PlayerSkillManager.Instance.OnSkillsChanged -= HandleSkillsChanged;
+        }
+    }
+
+    private void HandleSkillsChanged(object sender, EventArgs e)
+    {
+        if (gameObject.activeSelf)
+        {
+            GenerateButtons(); 
+        }
+    }
+
 
 }

@@ -35,6 +35,12 @@ public class EquipmentSlotUI : MonoBehaviour, IItemSlot
 
         currentItemUI.AddComponent<ItemUIData>().itemData = item;
         currentItemUI.AddComponent<DraggableItemUI>();
+        currentItemUI.AddComponent<ItemTooltipUIHover>();
+
+        CharacterEquipmentUI.Instance?.RaiseEquipmentChanged();
+        ItemStatsManager.Instance?.RecalculateItemStats();
+
+
     }
 
     public ItemSO ExtractItem()
@@ -49,7 +55,8 @@ public class EquipmentSlotUI : MonoBehaviour, IItemSlot
             Destroy(currentItemUI);
             currentItemUI = null;
         }
-
+        CharacterEquipmentUI.Instance?.RaiseEquipmentChanged();
+        ItemStatsManager.Instance?.RecalculateItemStats();
         return temp;
     }
 
@@ -69,6 +76,10 @@ public class EquipmentSlotUI : MonoBehaviour, IItemSlot
 
             iconImage.enabled = false;
         }
+        CharacterEquipmentUI.Instance?.RaiseEquipmentChanged();
+        ItemStatsManager.Instance?.RecalculateItemStats();
+
+
     }
 
     public bool IsEmpty() => equippedItem == null;

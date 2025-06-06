@@ -15,12 +15,14 @@ MonoBehaviour:
   id: 2
   skillName: WindNova
   icon: {fileID: 21300000, guid: 19d922754e82476449e07af937bb4018, type: 3}
-  cooldown: 1
-  isUnlocked: 1
+  cooldown: 10
+  castTime: 1
+  isUnlocked: 0
   projectilePrefab: {fileID: 0}
   effectPrefab: {fileID: 8310712989395054893, guid: b292658d18be56b4f94b551e5b19e59b, type: 3}
   effectDuration: 2
   skillBaseDamage: 5
   resourceCost: 20
+  damageScalePercent: 100
   radius: 4
   knockbackDistance: 5

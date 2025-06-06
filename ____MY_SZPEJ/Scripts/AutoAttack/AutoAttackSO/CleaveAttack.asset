@@ -16,6 +16,7 @@ MonoBehaviour:
   attackName: Cleave
   isUnlocked: 1
   icon: {fileID: 21300000, guid: 28b2dc6997ba49643a2ec6ac1fde29e5, type: 3}
+  attackTriggerType: 0
   damageMultiplier: 1.4
   attackType: 0
   range: 1

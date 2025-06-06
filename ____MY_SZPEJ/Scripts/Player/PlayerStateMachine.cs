@@ -8,10 +8,10 @@ using UnityEngine.EventSystems;
 public class PlayerStateMachine : MonoBehaviour
 {
     private enum PlayerState { Idle, Moving, Attacking, CastingSkill, Dashing }
-
+   
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float stoppingDistance = 0.5f;
-    [SerializeField] private AutoAttackHandler autoAttackHandler;
+    [SerializeField] private PlayerAutoAttackHandler autoAttackHandler;
     [SerializeField] private DashHandler dashHandler;
     [SerializeField] private PotionSlotUI potionSlot;
     [SerializeField] private PlayerStatsManager statsManager;
@@ -22,7 +22,7 @@ public class PlayerStateMachine : MonoBehaviour
     private PlayerAnimationController animationController;
     private void Awake()
     {
-        float moveSpeed = statsManager.GetMoveSpeed();
+     
         healthSystem = GetComponent<HealthSystem>();
         if (healthSystem != null)
         {
@@ -38,8 +38,10 @@ public class PlayerStateMachine : MonoBehaviour
 
         agent.acceleration = 999f;
 
-        if (autoAttackHandler == null)
-            autoAttackHandler = GetComponent<AutoAttackHandler>();
+    
+
+        PlayerStatsManager.Instance.OnMaxHealthChange += (_, _) => UpdateMoveSpeed(); // używamy tego eventu jako proxy
+        UpdateMoveSpeed();
 
         SwitchState(PlayerState.Idle);
     }
@@ -131,15 +133,22 @@ public class PlayerStateMachine : MonoBehaviour
 
     public void StartAutoAttack()
     {
+       
+        if (currentState == PlayerState.Attacking) return;
+
         RotateTowardsMouse();
 
-        if (autoAttackHandler != null)
-        {
-            autoAttackHandler.UseAttack();
-        }
+        float attackSpeed = PlayerStatsManager.Instance != null
+      ? PlayerStatsManager.Instance.GetAttackSpeed()
+      : 1f;
+
+        float delay = 1f / Mathf.Max(attackSpeed, 0.01f);
+
+        animationController?.PlayAttackAnimation(autoAttackHandler.CurrentAttack.attackTriggerType, delay);
 
         SwitchState(PlayerState.Attacking);
-        StartCoroutine(EndActionAfterSeconds(0.5f));
+        StartCoroutine(ExecuteAutoAttackAfterDelay(delay));
+
     }
 
     public void CastSkill(ISkill skill)
@@ -150,12 +159,40 @@ public class PlayerStateMachine : MonoBehaviour
             return;
         }
 
-        RotateTowardsMouse();
+        // Sprawdzenie cooldownu PRZED castowaniem
+        if (PlayerSkillManager.Instance.IsSkillOnCooldown(skill))
+        {
+            Debug.Log("Skill na cooldownie!");
+            return;
+        }
 
-        skill.Activate(transform);
+        // Sprawdzenie many PRZED castowaniem
+        ResourceSystem resourceSystem = GetComponent<ResourceSystem>();
+        int cost = skill.GetResourceCost();
+        if (resourceSystem != null && !resourceSystem.HasEnough(cost))
+        {
+            Debug.Log("Za mało many!");
+            return;
+        }
+
+        // Płacimy za skill tylko jeśli warunki spełnione
+        if (!resourceSystem.TrySpend(cost))
+        {
+            Debug.LogWarning("Nie udało się odjąć many mimo wcześniejszego sprawdzenia.");
+            return;
+        }
+
+        // Rozpocznij cooldown natychmiast
+        PlayerSkillManager.Instance.StartCooldown(skill);
+
+        // Obrót i rozpoczęcie castowania
+        RotateTowardsMouse();
         SwitchState(PlayerState.CastingSkill);
-        StartCoroutine(EndActionAfterSeconds(skill.GetCooldown()));
+        animationController?.PlayCastAnimation();
+        StartCoroutine(CastSkillWithDelay(skill));
     }
+
+
 
     public void StartDash()
     {
@@ -252,6 +289,32 @@ public class PlayerStateMachine : MonoBehaviour
             healthSystem.OnDead -= HandlePlayerDeath;
         }
     }
+
+    private void UpdateMoveSpeed()
+    {
+        if (agent != null && PlayerStatsManager.Instance != null)
+        {
+            agent.speed = PlayerStatsManager.Instance.GetMoveSpeed();
+        }
+    }
+    private IEnumerator CastSkillWithDelay(ISkill skill)
+    {
+        float castTime = skill.GetData().castTime;
+        yield return new WaitForSeconds(castTime);
+
+        skill.Activate(transform);
+        SwitchState(PlayerState.Idle);
+    }
+
+    private IEnumerator ExecuteAutoAttackAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        autoAttackHandler.UseAttack(); // Skill faktycznie się aktywuje dopiero teraz
+        animationController?.ResetSpeed();
+        SwitchState(PlayerState.Idle);
+    }
+
 
 
 }

@@ -5,7 +5,7 @@ public class AutoAttackPanel : MonoBehaviour
     [SerializeField] private GameObject optionButtonPrefab;
     [SerializeField] private Transform buttonContainer;
     [SerializeField] private AutoAttackDatabase autoAttackDatabase;
-    [SerializeField] private AutoAttackHandler autoAttackHandler;
+    [SerializeField] private PlayerAutoAttackHandler autoAttackHandler;
     [SerializeField] private GameObject panelRoot; 
 
     private void OnEnable()

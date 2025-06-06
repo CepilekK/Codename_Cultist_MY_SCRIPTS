@@ -17,40 +17,52 @@ public class FireballSkill : ISkill
             return;
         }
 
-        UnitSO_Container unitContainer = playerTransform.GetComponent<UnitSO_Container>();
-        if (unitContainer == null)
-        {
-            Debug.LogWarning("Brak UnitSO_Container na obiekcie gracza!");
-            return;
-        }
-
-        UnitSO playerUnit = unitContainer.GetUnitSO();
-        int damage = playerUnit != null ? playerUnit.baseDamage : 10;
-
-        Vector3 mouseWorldPos = GetMouseWorldPosition();
+        Vector3 mouseWorldPos = GetMouseWorldPosition(playerTransform);
         Vector3 direction = mouseWorldPos - playerTransform.position;
         direction.y = 0f;
 
-        GameObject go = GameObject.Instantiate(data.ProjectilePrefab, playerTransform.position + Vector3.up * 1f, Quaternion.identity);
+        if (direction == Vector3.zero)
+        {
+            Debug.LogWarning("Fireball: nieprawidłowy kierunek (zero)!");
+            return;
+        }
+
+        int baseSkillDamage = PlayerStatsManager.Instance != null
+            ? PlayerStatsManager.Instance.SkillBaseDamage
+            : 10;
+
+        float skillMultiplier = PlayerStatsManager.Instance != null
+            ? PlayerStatsManager.Instance.SkillBaseDamageMultiplier
+            : 1f;
+
+        float rawDamage = (baseSkillDamage + data.skillBaseDamage) * skillMultiplier;
+        int totalDamage = Mathf.RoundToInt(rawDamage * (data.damageScalePercent / 100f));
+
+
+        GameObject go = GameObject.Instantiate(
+            data.ProjectilePrefab,
+            playerTransform.position + Vector3.up * 1f,
+            Quaternion.LookRotation(direction)
+        );
+
         Projectile fireball = go.GetComponent<Projectile>();
-        fireball.Init(direction, 10f, 3f, damage, AttackSource.Player);
+        fireball.Init(direction, 10f, 3f, totalDamage, AttackSource.Player);
     }
+
 
     public float GetCooldown() => data.cooldown;
     public SkillSO GetData() => data;
     public int GetResourceCost() => data.resourceCost;
 
-    private Vector3 GetMouseWorldPosition()
+    private Vector3 GetMouseWorldPosition(Transform playerTransform)
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Ground")))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
         {
             return hit.point;
         }
 
-        return Vector3.zero;
+        Debug.LogWarning("Fireball: nie znaleziono punktu na warstwie Ground. Używam fallback.");
+        return playerTransform.position + playerTransform.forward * 5f;
     }
 }
-

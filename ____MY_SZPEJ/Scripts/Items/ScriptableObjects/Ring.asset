@@ -26,3 +26,18 @@ MonoBehaviour:
   duration: 0
   companionPrefab: {fileID: 0}
   companionStats: {fileID: 0}
+  armor: 0
+  evasion: 0
+  energyShield: 0
+  minDamage: 0
+  maxDamage: 0
+  attackSpeed: 0
+  critChance: 0
+  prefixes: []
+  suffixes: []
+  healthBonus: 0
+  moveSpeedBonus: 0
+  implicitEffect: 2
+  implicitMinValue: 1
+  implicitMaxValue: 2
+  implicitFinalValue: 0

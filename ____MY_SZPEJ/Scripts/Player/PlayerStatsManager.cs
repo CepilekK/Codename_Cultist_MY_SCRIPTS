@@ -23,6 +23,12 @@ public class PlayerStatsManager : MonoBehaviour
     public int RequiredXP => Level * 2;
 
     private int spentSkillPoints = 0;
+    // SKILL DAMAGE
+    public int SkillBaseDamage { get; private set; }
+    public float SkillBaseDamageMultiplier { get; private set; }
+    // Minions Damage
+    public int PlayerMinionsBaseDMG { get; private set; } = 0;
+    public float PlayerMinionsDMGMultiplier { get; private set; } = 1f;
 
     // Bonusy z drzewka umiejêtnoœci (resetowane przy przeliczeniu statystyk)
     private float bonusDamageFromSkillTree = 0f;
@@ -31,12 +37,29 @@ public class PlayerStatsManager : MonoBehaviour
     private int bonusMaxResourcePointsSkillTree = 0;
     //////////////////////////////////////////////////
 
+    //EQUIPPED ITEM
+
+    // Defense
+    public int Armor { get; private set; }
+    public int Evasion { get; private set; }
+    public int EnergyShield { get; private set; }
+
+    // Weapon
+    public int MinWeaponDamage { get; private set; }
+    public int MaxWeaponDamage { get; private set; }
+    public float AttackSpeed { get; private set; }
+    public float CritChance { get; private set; }
+
+    private int bonusMaxHealthFromItems = 0;
+    private float bonusMoveSpeedFromItems = 0f;
+  
+    ///
+
     public event EventHandler OnLevelUp;
     public event Action<int, int> OnXPChanged; // (current, required)
 
     private void Awake()
     {
-
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -45,19 +68,43 @@ public class PlayerStatsManager : MonoBehaviour
 
         Instance = this;
 
+        if (ItemStatsManager.Instance != null)
+        {
+            ItemStatsManager.Instance.OnItemStatsChanged += () =>
+            {
+                CalculateFinalStats();
+            };
+        }
         CalculateFinalStats();
+    }
+    private void Start()
+    {
+        if (CharacterEquipmentUI.Instance != null)
+            CharacterEquipmentUI.Instance.OnEquipmentChanged += () => CalculateFinalStats();
+
+        if (ItemStatsManager.Instance != null)
+            ItemStatsManager.Instance.OnItemStatsChanged += () => CalculateFinalStats();
+
         OnXPChanged?.Invoke(CurrentXP, RequiredXP);
     }
 
+
     public void CalculateFinalStats()
     {
-        MaxHealth = baseStats.maxHealthPoints + bonusMaxHealthFromSkillTree;
+        MaxHealth = baseStats.maxHealthPoints + bonusMaxHealthFromSkillTree + bonusMaxHealthFromItems;
         MaxResource = baseStats.maxResourcePoints + bonusMaxResourcePointsSkillTree;
-        MoveSpeed = baseStats.moveSpeed + bonusSpeedFromSkillTree;
+        MoveSpeed = baseStats.moveSpeed + bonusSpeedFromSkillTree + bonusMoveSpeedFromItems;
         BaseDamage = baseStats.baseDamage + bonusDamageFromSkillTree;
         HealthRegen = baseStats.maxHealthPoints * (baseStats.healthRegenPercent / 100f);
         ResourceRegen = 2f;
         CooldownReduction = 0f;
+
+        //Skille
+        SkillBaseDamage = baseStats.skillBaseDamage;
+        SkillBaseDamageMultiplier = baseStats.skillBaseDamageMultiplier;
+        //Itemy
+        PullItemStats();
+
     }
 
     public void AddXP(int amount)
@@ -106,6 +153,16 @@ public class PlayerStatsManager : MonoBehaviour
         CalculateFinalStats();
         OnLevelUp?.Invoke(this, EventArgs.Empty);
         OnXPChanged?.Invoke(CurrentXP, RequiredXP);
+    }
+    public float GetAttackSpeed()
+    {
+        // Jeœli gracz ma broñ z atak speed — u¿yj tego
+        if (ItemStatsManager.Instance != null && ItemStatsManager.Instance.HasWeaponEquipped())
+        {
+            return ItemStatsManager.Instance.AttackSpeed;
+        }
+
+        return baseStats.attackSpeed;  // z UnitSO
     }
 
 
@@ -164,6 +221,31 @@ public class PlayerStatsManager : MonoBehaviour
 
     //SKILL TREE END
 
+    /// ITEMS
+    public void ApplyItemBonuses(int hpBonus, float speedBonus)
+    {
+        bonusMaxHealthFromItems = hpBonus;
+        bonusMoveSpeedFromItems = speedBonus;
+        OnMaxHealthChange?.Invoke(this, EventArgs.Empty);
+    }
+
+
+
+    private void PullItemStats()
+    {
+        Armor = (ItemStatsManager.Instance?.Armor ?? 0);
+        Evasion = (ItemStatsManager.Instance?.Evasion ?? 0);
+        EnergyShield = (ItemStatsManager.Instance?.EnergyShield ?? 0);
+
+        MinWeaponDamage = baseStats.baseDamage + (ItemStatsManager.Instance?.MinDamage ?? 0);
+        MaxWeaponDamage = baseStats.baseDamage + (ItemStatsManager.Instance?.MaxDamage ?? 0);
+
+        AttackSpeed = (ItemStatsManager.Instance?.AttackSpeed ?? 0f);
+        CritChance = (ItemStatsManager.Instance?.CritChance ?? 0f);
+    }
+
+
+    //END ITEMS
 
     // Gettery
     public int GetStrength() => baseStats.strength;
@@ -177,5 +259,6 @@ public class PlayerStatsManager : MonoBehaviour
     public float GetResourceRegen() => ResourceRegen;
     public float GetHealthRegen() => HealthRegen;
     public int AvailableSkillPoints => Mathf.Max(0, Level - 1 - spentSkillPoints);
+
 
 }

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "NewPerk", menuName = "ScriptableObject/SkillTree/Perk")]
 public class PerkSO : ScriptableObject
@@ -6,7 +6,7 @@ public class PerkSO : ScriptableObject
     public string perkName;
     public Sprite icon;
     public string description;
-
+    public SkillSO skillToUnlock;
     public enum EffectType { BonusDamage, BonusHealth, BonusSpeed, UnlockSkill /* ... */ }
     public EffectType effect;
 
@@ -14,6 +14,8 @@ public class PerkSO : ScriptableObject
 
     public void Apply()
     {
+        Debug.Log($"Perk '{perkName}' Apply wywołane. Typ efektu: {effect}");
+
         switch (effect)
         {
             case EffectType.BonusDamage:
@@ -26,11 +28,22 @@ public class PerkSO : ScriptableObject
                 PlayerStatsManager.Instance.ApplyBonusSpeed(value);
                 break;
             case EffectType.UnlockSkill:
-                // np. PlayerSkillManager.Instance.UnlockSkill(id);
+                if (skillToUnlock != null)
+                {
+                    Debug.Log($"Próba odblokowania skilla: {skillToUnlock.skillName}");
+                    PlayerSkillManager.Instance.UnlockSkill(skillToUnlock);
+                }
+                else
+                {
+                    Debug.LogWarning("Perk ma efekt UnlockSkill, ale skillToUnlock jest null!");
+                }
                 break;
         }
 
-        Debug.Log($"Aktywowano perka: {perkName}");
+        Debug.Log($"Perk '{perkName}' został zastosowany.");
     }
+
+
+   
 
 }

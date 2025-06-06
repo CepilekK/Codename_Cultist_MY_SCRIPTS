@@ -66,8 +66,8 @@ public class BackpackUI : MonoBehaviour
                 image.raycastTarget = true;             
                 itemObj.AddComponent<ItemUIData>().itemData = item;             
                 itemObj.AddComponent<DraggableItemUI>();
+                itemObj.AddComponent<ItemTooltipUIHover>();
 
-               
                 slotScript.SetItem(itemObj);
                 return true;
             }
@@ -115,12 +115,13 @@ public class BackpackUI : MonoBehaviour
 
         // Przypisz dane przedmiotu do obiektu UI
         dragItemObj.AddComponent<ItemUIData>().itemData = item;
-
+        dragItemObj.AddComponent<ItemTooltipUIHover>();
         // Dodaj komponent obsługujący drag & drop i rozpocznij przeciąganie
         DraggableItemUI drag = dragItemObj.AddComponent<DraggableItemUI>();
         drag.BeginDragManually();
 
         currentDraggedItem = dragItemObj;
+
     }
 
    

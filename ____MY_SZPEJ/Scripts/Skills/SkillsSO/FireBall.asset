@@ -15,6 +15,14 @@ MonoBehaviour:
   id: 1
   skillName: FireBall
   icon: {fileID: 21300000, guid: b57ec54d418f4d1418e20124641a84ea, type: 3}
-  cooldown: 2
+  cooldown: 1
+  castTime: 0.4
   isUnlocked: 1
   projectilePrefab: {fileID: 8721893482106851358, guid: 33c49784f4f088e438552d296de97e76, type: 3}
+  effectPrefab: {fileID: 0}
+  effectDuration: 2
+  skillBaseDamage: 20
+  resourceCost: 20
+  damageScalePercent: 100
+  radius: 3
+  knockbackDistance: 2

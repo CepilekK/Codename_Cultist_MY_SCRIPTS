@@ -16,6 +16,7 @@ MonoBehaviour:
   attackName: SingleShot
   isUnlocked: 1
   icon: {fileID: 21300000, guid: 82eb4b47c6005ee45944f67bf2895294, type: 3}
+  attackTriggerType: 1
   damageMultiplier: 1
   attackType: 1
   range: 4

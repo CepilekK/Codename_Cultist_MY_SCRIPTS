@@ -8,6 +8,7 @@ public class SkillSO : ScriptableObject
     public string skillName;
     public Sprite icon;
     public float cooldown = 1f;
+    public float castTime = 0.4f;
     public bool isUnlocked = true;
 
     [Header("Visuals")]
@@ -22,6 +23,8 @@ public class SkillSO : ScriptableObject
     [Header("Combat")]
     public int skillBaseDamage = 20;
     public int resourceCost = 20;
+    [Range(1f, 1000f)]
+    public float damageScalePercent = 100f; // 100% = neutralnie
 
     [Header("Area of Effect")]
     public float radius = 3f;

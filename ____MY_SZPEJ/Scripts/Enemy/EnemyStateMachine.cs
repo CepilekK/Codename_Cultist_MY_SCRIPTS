@@ -13,7 +13,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     private EnemyState currentState = EnemyState.Idle;
 
-    [SerializeField] private Transform player;
+   private Transform player;
 
     [SerializeField] private float chasingTime = 5f;
     private float chasingTimer;
@@ -26,7 +26,7 @@ public class EnemyStateMachine : MonoBehaviour
     private UnitSO stats;
     private EnemyAttackHandler attackHandler;
     private float lastAttackTime;
-
+    private AnimationController animationController;
     private HealthSystem healthSystem;
 
     private bool isAttackingNow = false;
@@ -47,6 +47,7 @@ public class EnemyStateMachine : MonoBehaviour
     {
         attackHandler = GetComponent<EnemyAttackHandler>();
 
+        animationController = GetComponentInChildren<AnimationController>();
         if (player == null)
         {
             GameObject foundPlayer = GameObject.FindWithTag("Player");
@@ -130,10 +131,11 @@ public class EnemyStateMachine : MonoBehaviour
                 }
                 else if (Time.time - lastAttackTime >= stats.attackCooldown)
                 {
-                    animator.SetTrigger("isAttacking");
+                    animationController?.PlayAttackAnimation(attackHandler?.GetAutoAttack());
                     lastAttackTime = Time.time;
 
-                    attackHandler?.ExecuteAttack(); 
+                    attackHandler?.UseAttack();
+
                 }
                 break;
         }

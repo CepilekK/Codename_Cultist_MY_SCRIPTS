@@ -1,36 +1,16 @@
 using UnityEngine;
 
-public class EnemyAttackHandler : MonoBehaviour
+public class EnemyAttackHandler : AutoAttackHandler
 {
-    [SerializeField] private AutoAttackSO attackData;
-    private IAutoAttack attackInstance;
-
-    private void Awake()
+    public override int GetCalculatedDamage()
     {
-        if (attackData != null && attackData.isUnlocked)
-        {
-            attackInstance = CreateInstance();
-        }
-    }
+        UnitSO_Container unitContainer = GetComponent<UnitSO_Container>();
+        if (unitContainer == null || GetAutoAttack() == null)
+            return 0;
 
-    private IAutoAttack CreateInstance()
-    {
-        switch (attackData.attackType)
-        {
-            case AutoAttackType.Cleave:
-                return new CleaveAttack(attackData, null);
+        float baseDamage = unitContainer.GetUnitSO().baseDamage;
+        float multiplier = GetAutoAttack().damageMultiplier;
 
-            default:
-                Debug.LogWarning("Nieobs³ugiwany typ autoataku dla wroga!");
-                return null;
-        }
-    }
-
-    public void ExecuteAttack()
-    {
-        if (attackInstance != null)
-        {
-            attackInstance.Execute(transform);
-        }
+        return Mathf.RoundToInt(baseDamage * multiplier);
     }
 }

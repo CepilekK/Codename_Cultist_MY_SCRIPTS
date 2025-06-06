@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 971e07af33510f046ab0e22f53e3462f, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: 
+  unitName: Dummy
+  maxHealthPoints: 400
+  healthRegenPercent: 1
+  baseDamage: 50
+  maxResourcePoints: 200
+  attackSpeed: 1
+  moveSpeedModifier: 3
+  skillBaseDamage: 10
+  skillBaseDamageMultiplier: 1
+  strength: 3
+  dexterity: 3
+  intelligence: 3
+  aggroRange: 10
+  chaseRange: 15
+  attackRange: 2
+  moveSpeed: 3
+  attackCooldown: 1.5
+  minDropAmount: 0
+  maxDropAmount: 4
+  baseXpValue: 2

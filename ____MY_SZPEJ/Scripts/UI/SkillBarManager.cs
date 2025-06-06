@@ -20,14 +20,18 @@ public class SkillBarManager : MonoBehaviour
 
     private void Start()
     {
-        SkillSO fireball = skillDatabase.GetSkillData(1); 
-        ISkill fireballInstance = new FireballSkill(fireball);
-        AssignSkillToSlot(0, fireballInstance);
-
-        SkillSO windNova = skillDatabase.GetSkillData(2); 
-        ISkill windNovaInstance = new WindNovaSkill(windNova);
-        AssignSkillToSlot(1, windNovaInstance); 
+        int slotIndex = 0;
+        foreach (SkillSO skillSO in skillDatabase.GetAllSkills())
+        {
+            if (skillSO.isUnlocked && slotIndex < skillButtons.Length)
+            {
+                ISkill skillInstance = SkillFactory.CreateSkill(skillSO); // użyj własnej fabryki, np. z pliku SkillFactory.cs
+                AssignSkillToSlot(slotIndex, skillInstance);
+                slotIndex++;
+            }
+        }
     }
+
 
 
 
@@ -54,16 +58,29 @@ public class SkillBarManager : MonoBehaviour
         ISkill skill = assignedSkills[index];
         if (skill == null) return;
 
-        ResourceSystem resourceSystem = playerStateMachine.GetComponent<ResourceSystem>();
-        if (resourceSystem != null && resourceSystem.TrySpend(skill.GetResourceCost()))
+        // cooldown check — jeśli jest na cooldownie, nie używaj skilla
+        if (PlayerSkillManager.Instance.IsSkillOnCooldown(skill))
         {
-            playerStateMachine.CastSkill(skill);
+            Debug.Log("Skill jest na cooldownie!");
+            return;
         }
-        else
+
+        ResourceSystem resourceSystem = playerStateMachine.GetComponent<ResourceSystem>();
+        if (resourceSystem == null) return;
+
+        int cost = skill.GetResourceCost();
+
+        // najpierw sprawdź czy masz zasoby
+        if (!resourceSystem.HasEnough(cost))
         {
             Debug.Log("Za mało zasobów!");
+            return;
         }
+
+        // wszystko OK — teraz już możesz rzucać skill
+        playerStateMachine.CastSkill(skill);
     }
+
 
 
 

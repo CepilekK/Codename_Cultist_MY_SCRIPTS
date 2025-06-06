@@ -4,7 +4,7 @@ using TMPro;
 
 public class AutoAttackButton : MonoBehaviour
 {
-    [SerializeField] private AutoAttackHandler autoAttackHandler;
+    [SerializeField] private PlayerAutoAttackHandler autoAttackHandler;
     [SerializeField] private GameObject autoAttackPanel;
 
     [Header("UI")]

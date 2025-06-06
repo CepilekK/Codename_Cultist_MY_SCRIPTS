@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum ItemRarity
@@ -33,6 +34,12 @@ public enum ItemType
     Currency,
     QuestItem
 }
+public enum ImplicitEffectType
+{
+    None,
+    BonusHealth,
+    BonusMoveSpeed
+}
 
 [CreateAssetMenu(fileName = "NewItem", menuName = "ScriptableObject/Item")]
 public class ItemSO : ScriptableObject
@@ -60,4 +67,30 @@ public class ItemSO : ScriptableObject
     public GameObject companionPrefab;
     public UnitSO companionStats;
 
+
+    [Header("Armor Stats")]
+    public int armor;
+    public int evasion;
+    public int energyShield;
+
+    [Header("Weapon Stats")]
+    public int minDamage;
+    public int maxDamage;
+    public float attackSpeed;      // np. 1.25 ataku na sek
+    [Range(0f, 100f)]
+    public float critChance;       // np. 5% = 5f
+
+    [Header("Dynamic Modifiers")]
+    public List<ItemModifierSO> prefixes = new();
+    public List<ItemModifierSO> suffixes = new();
+
+    [Header("Bonus Stats (from Affixes)")]
+    public int healthBonus;
+    public float moveSpeedBonus;
+
+    [Header("Implicit")]
+    public ImplicitEffectType implicitEffect = ImplicitEffectType.None;
+    public float implicitMinValue;
+    public float implicitMaxValue;
+    [HideInInspector] public float implicitFinalValue;
 }

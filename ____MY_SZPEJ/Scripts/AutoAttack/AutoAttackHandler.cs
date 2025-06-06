@@ -2,12 +2,12 @@
 
 public class AutoAttackHandler : MonoBehaviour
 {
-    [SerializeField] private AutoAttackSO currentAttack;
+    [SerializeField] protected AutoAttackSO currentAttack;
 
     private UnitSO_Container unitContainer;
-    private IAutoAttack currentAttackInstance;
+    protected IAutoAttack currentAttackInstance;
 
-    [SerializeField]private PlayerStatsManager statsManager;
+    [HideInInspector][SerializeField] protected PlayerStatsManager statsManager;
 
     public event System.Action<AutoAttackSO> OnAutoAttackChanged;
 
@@ -53,7 +53,7 @@ public class AutoAttackHandler : MonoBehaviour
         }
     }
 
-    public void UseAttack()
+    public virtual void UseAttack()
     {
         if (currentAttack == null || !currentAttack.isUnlocked)
         {
@@ -70,7 +70,7 @@ public class AutoAttackHandler : MonoBehaviour
         currentAttackInstance.Execute(transform);
     }
 
-    public int GetCalculatedDamage()
+    public virtual int GetCalculatedDamage()
     {
         if (currentAttack == null || statsManager == null)
             return 0;
@@ -82,5 +82,19 @@ public class AutoAttackHandler : MonoBehaviour
     public AutoAttackSO GetAutoAttack()
     {
         return currentAttack;
+    }
+
+    protected virtual void RotateTowardsMouse()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = hit.point - transform.position;
+            direction.y = 0f;
+            if (direction.sqrMagnitude > 0.01f)
+            {
+                transform.rotation = Quaternion.LookRotation(direction);
+            }
+        }
     }
 }

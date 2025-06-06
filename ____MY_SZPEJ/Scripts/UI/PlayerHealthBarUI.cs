@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,7 +6,8 @@ public class PlayerHealthBarUI : MonoBehaviour
 {
     [SerializeField] private HealthSystem healthSystem;
     [SerializeField] private Image healthFillImage;
-    
+    [SerializeField] private TextMeshProUGUI healthText;
+
 
 
     private void Start()
@@ -40,6 +42,12 @@ public class PlayerHealthBarUI : MonoBehaviour
         if (healthSystem != null)
         {
             healthFillImage.fillAmount = healthSystem.GetHealthNormalized();
+            if (healthText != null)
+            {
+                int current = healthSystem.GetHealth();
+                int max = healthSystem.GetMaxHealth();
+                healthText.text = $"{current} / {max}";
+            }
         }
     }
 

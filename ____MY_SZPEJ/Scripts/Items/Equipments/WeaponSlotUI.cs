@@ -50,6 +50,8 @@ public class WeaponSlotUI : MonoBehaviour, IItemSlot
 
         currentItemUI.AddComponent<ItemUIData>().itemData = item;
         currentItemUI.AddComponent<DraggableItemUI>();
+        currentItemUI.AddComponent<ItemTooltipUIHover>();
+
     }
 
     public bool IsValidForThisSlot(ItemSO item)

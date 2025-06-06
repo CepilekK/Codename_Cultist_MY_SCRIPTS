@@ -5,6 +5,8 @@ public class ItemDropManager : MonoBehaviour
 {
     public static ItemDropManager Instance { get; private set; }
 
+    [SerializeField] private ModifierDatabase modifierDatabase;
+
     [System.Serializable]
     public class ItemTypeDropChance
     {
@@ -49,10 +51,11 @@ public class ItemDropManager : MonoBehaviour
             ItemRarity? chosenRarity = RollItemRarity();
             if (chosenRarity == null) continue;
 
-            ItemSO selectedItem = RollItemOfTypeAndRarity(chosenType.Value, chosenRarity.Value);
-            if (selectedItem == null) continue;
+            List<ItemSO> candidates = allItems.FindAll(it => it.itemType == chosenType);
+            if (candidates.Count == 0) continue;
 
-            SpawnItem(selectedItem, position);
+            ItemSO selectedItem = candidates[Random.Range(0, candidates.Count)];
+            SpawnItem(selectedItem, position, chosenRarity.Value);
         }
     }
 
@@ -94,38 +97,7 @@ public class ItemDropManager : MonoBehaviour
         return null;
     }
 
-    private ItemSO RollItemOfTypeAndRarity(ItemType type, ItemRarity rarity)
-    {
-        List<ItemSO> candidates = new List<ItemSO>();
-
-        foreach (ItemSO item in allItems)
-        {
-            if (item.itemType == type && item.rarity == rarity)
-            {
-                candidates.Add(item);
-            }
-        }
-
-        if (candidates.Count == 0) return null;
-
-        float totalWeight = 0f;
-        foreach (ItemSO item in candidates)
-        {
-            totalWeight += item.dropWeight;
-        }
-
-        float roll = Random.Range(0f, totalWeight);
-        foreach (ItemSO item in candidates)
-        {
-            if (roll < item.dropWeight)
-                return item;
-            roll -= item.dropWeight;
-        }
-
-        return null;
-    }
-
-    private void SpawnItem(ItemSO item, Vector3 origin)
+    private void SpawnItem(ItemSO baseItem, Vector3 origin, ItemRarity rarity)
     {
         if (worldItemPrefab == null)
         {
@@ -139,9 +111,23 @@ public class ItemDropManager : MonoBehaviour
         ItemWorld worldComp = go.GetComponent<ItemWorld>();
         if (worldComp != null)
         {
-            worldComp.SetItem(item);
+            ItemSO newItem = Instantiate(baseItem);
+            newItem.rarity = rarity;
+
+            if (modifierDatabase != null)
+            {
+                List<ItemModifierSO> pool = new();
+                pool.AddRange(modifierDatabase.GetPrefixesForType(newItem.itemType));
+                pool.AddRange(modifierDatabase.GetSuffixesForType(newItem.itemType));
+
+                ItemAffixGenerator.ApplyAffixes(newItem, pool, rarity);
+            }
+            if (newItem.implicitEffect != ImplicitEffectType.None)
+            {
+                newItem.implicitFinalValue = UnityEngine.Random.Range(newItem.implicitMinValue, newItem.implicitMaxValue);
+            }
+
+            worldComp.SetItem(newItem);
         }
     }
-    
-
 }

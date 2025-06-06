@@ -12,8 +12,13 @@ public class UnitSO : ScriptableObject
     public float healthRegenPercent = 1f; //  1 oznacza 1% HP/sek
     public int baseDamage = 10; 
     public int maxResourcePoints = 200;
+    public float attackSpeed = 1f;
+
     [Range(0.1f, 3f)]
-    public float moveSpeedModifier = 1f; // Modyfikator prêdkoœci ruchu (procentowy)
+    public float moveSpeedModifier = 1f; // Modyfikator prêdkoœci ruchu (procentowy)1f sprawia ze nie wp³ywa na wynik
+    [Header("Skill Stats")]
+    public int skillBaseDamage = 10;
+    public float skillBaseDamageMultiplier = 1f;// 1f sprawia ze nie wp³ywa na wynik
 
     [Header("Attributes")]
     public int strength = 0;

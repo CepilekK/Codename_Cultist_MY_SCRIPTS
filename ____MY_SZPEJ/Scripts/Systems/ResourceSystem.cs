@@ -70,6 +70,10 @@ public class ResourceSystem : MonoBehaviour
         currentResource = maxResource;
         OnResourceChanged?.Invoke(currentResource, maxResource);
     }
+    public bool HasEnough(int amount)
+    {
+        return currentResource >= amount;
+    }
 
     public float GetResourceNormalized() => (float)currentResource / maxResource;
 }

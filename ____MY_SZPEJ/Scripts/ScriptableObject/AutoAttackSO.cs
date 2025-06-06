@@ -8,6 +8,8 @@ public class AutoAttackSO : ScriptableObject
     public string attackName;
     public bool isUnlocked = true;
     public Sprite icon;
+    [Header("Animation")]
+    public AttackTriggerType attackTriggerType = AttackTriggerType.Melee;
 
     [Header("Damage Scaling")]
     [Tooltip("Mno¿nik bazowych obra¿eñ z UnitSO")]

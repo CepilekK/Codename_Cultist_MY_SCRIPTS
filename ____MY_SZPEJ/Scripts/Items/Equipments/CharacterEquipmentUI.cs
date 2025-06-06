@@ -1,7 +1,10 @@
 using UnityEngine;
+using System;
 
 public class CharacterEquipmentUI : MonoBehaviour
 {
+    public event Action OnEquipmentChanged;
+
     public static CharacterEquipmentUI Instance { get; private set; }
 
     [Header("Kontener ze slotami")]
@@ -69,6 +72,10 @@ public class CharacterEquipmentUI : MonoBehaviour
         };
     }
 
+    public void RaiseEquipmentChanged()
+    {
+        OnEquipmentChanged?.Invoke();
+    }
 
     public WeaponSlotUI GetMainHandSlot() => mainHandSlot;
     public WeaponSlotUI GetOffHandSlot() => offHandSlot;
